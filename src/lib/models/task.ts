@@ -5,8 +5,8 @@ export enum IntervalUnit {
 	Year = 'year',
 }
 
-export type Task = {
+export interface Task {
 	name: string;
 	intervalValue: number;
 	intervalUnit: IntervalUnit;
-};
+}
