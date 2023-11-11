@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte';
-	import type { Task } from '$lib/models/task';
-	import type { WithStringId } from '$lib/mongo';
+	import type { WithStringId } from '$lib/db';
+	import type { Task } from '$lib/db/models';
 	import TaskForm from './TaskForm/index.svelte';
 
 	export let task: WithStringId<Task>;
@@ -38,5 +38,5 @@
 </tr>
 
 <Modal isOpen={editing} onClose={() => (editing = false)}>
-	<TaskForm {task} afterSubmit={() => (editing = false)} />
+	<TaskForm {task} onClose={() => (editing = false)} />
 </Modal>

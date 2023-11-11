@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { IntervalUnit, type Task } from '$lib/models/task';
-	import type { WithStringId } from '$lib/mongo';
+	import type { WithStringId } from '$lib/db';
+	import { IntervalUnit, type Task } from '$lib/db/models';
 
 	export let task: WithStringId<Task> | undefined = undefined;
-	export let afterSubmit: () => void = () => {};
+	export let onClose: () => void = () => {};
 </script>
 
 <div class="card">
@@ -31,7 +31,7 @@
 				>
 					<input name="id" type="hidden" value={task?._id} />
 					<button class="button is-danger is-outlined" type="submit">
-						<span class="icon"> <i class="fa-regular fa-trash-can" /></span>
+						<span class="icon"><i class="fa-regular fa-trash-can" /></span>
 					</button>
 				</form>
 			{/if}
@@ -44,7 +44,7 @@
 			use:enhance={() => {
 				return async ({ update }) => {
 					update();
-					afterSubmit();
+					onClose();
 				};
 			}}
 		>
@@ -102,10 +102,13 @@
 				</p>
 			</label>
 
-			<div class="is-flex is-justify-content-space-between">
-				<button class="button is-primary" type="submit"
-					>{#if task}Update{:else}Add{/if}</button
-				>
+			<div class="is-flex is-justify-content-flex-end gap-2">
+				<button class="button is-primary" type="submit">
+					{#if task}Update{:else}Add{/if}
+				</button>
+				<button class="button" type="button" on:click={onClose}>
+					Cancel
+				</button>
 			</div>
 		</form>
 	</div>
