@@ -103,11 +103,11 @@
 			</label>
 
 			<div class="is-flex is-justify-content-flex-end gap-2">
-				<button class="button is-primary" type="submit">
-					{#if task}Update{:else}Add{/if}
-				</button>
 				<button class="button" type="button" on:click={afterSave}>
 					Cancel
+				</button>
+				<button class="button is-primary" type="submit">
+					{#if task}Update{:else}Add{/if}
 				</button>
 			</div>
 		</form>

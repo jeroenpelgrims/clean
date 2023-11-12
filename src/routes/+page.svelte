@@ -3,24 +3,46 @@
 	import type { PageData } from './$types';
 	import GroupForm from './GroupForm/index.svelte';
 	import TaskGroup from './TaskGroup/index.svelte';
+	import { manageGroups, manageTasks } from './page.store';
 
 	export let data: PageData;
-	const { selectedTeam } = data;
 	let addGroupModalOpen = false;
 </script>
+
+<div class="is-flex is-justify-content-flex-end gap-1">
+	{#if $manageGroups || $manageTasks}
+		<button
+			class="button is-danger"
+			on:click={() => {
+				$manageTasks = false;
+				$manageGroups = false;
+			}}
+		>
+			<span class="icon is-small">
+				<i class="fas fa-chevron-left" />
+			</span>
+			<span>Back</span>
+		</button>
+	{:else}
+		<button class="button" on:click={() => ($manageGroups = true)}>
+			<span class="icon is-small">
+				<i class="fas fa-folder-open" />
+			</span>
+			<span>Manage groups</span>
+		</button>
+
+		<button class="button" on:click={() => ($manageTasks = true)}>
+			<span class="icon is-small">
+				<i class="fas fa-list-check" />
+			</span>
+			<span>Manage tasks</span>
+		</button>
+	{/if}
+</div>
 
 {#each data.selectedTeam.taskGroups as group}
 	<TaskGroup {group} />
 {/each}
-
-<div id="addButtons" class="is-flex is-justify-content-center">
-	<button class="button" on:click={() => (addGroupModalOpen = true)}>
-		<span class="icon is-small">
-			<i class="fas fa-plus" />
-		</span>
-		<span>Add new group</span>
-	</button>
-</div>
 
 <Modal isOpen={addGroupModalOpen} onClose={() => (addGroupModalOpen = false)}>
 	<GroupForm afterSave={() => (addGroupModalOpen = false)} />
