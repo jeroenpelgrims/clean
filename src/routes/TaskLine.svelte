@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/Modal.svelte';
 	import type { WithStringId } from '$lib/db';
-	import type { Task } from '$lib/db/models';
-	import TaskForm from './TaskForm/index.svelte';
+	import type { Task, TaskGroup } from '$lib/db/models';
 	import { manageGroups, manageTasks } from './page.store';
+	import TaskForm from './tasks/TaskForm/index.svelte';
 
+	export let group: WithStringId<TaskGroup>;
 	export let task: WithStringId<Task>;
 	let editing = false;
 </script>
@@ -17,18 +19,45 @@
 	<td class="is-vcentered">
 		<span class="tag is-danger is-light">In 2 days</span>
 	</td>
-	<td class="is-vcentered has-text-right">
+	<td class="is-flex is-justify-content-flex-end gap-1">
 		{#if !$manageGroups}
 			{#if $manageTasks}
 				<button
 					class="button is-warning is-light"
-					title="Remove task"
+					title="Edit task"
 					on:click={() => (editing = true)}
 				>
 					<span class="icon">
 						<i class="fa-solid fa-pencil" />
 					</span>
 				</button>
+				<form
+					id="deleteForm"
+					method="POST"
+					action="/tasks?/deleteTask"
+					use:enhance={({ cancel }) => {
+						if (!confirm('Are you sure you want to delete this task?')) {
+							cancel();
+							return;
+						}
+
+						return async ({ update }) => {
+							update();
+						};
+					}}
+				>
+					<input name="groupId" type="hidden" value={group._id} />
+					<input name="id" type="hidden" value={task?._id} />
+					<button
+						class="button is-danger is-light"
+						title="Remove task"
+						type="submit"
+					>
+						<span class="icon">
+							<i class="fa-solid fa-trash-can" />
+						</span>
+					</button>
+				</form>
 			{:else}
 				<button class="button is-success is-light" title="Mark as completed">
 					<span class="icon">
@@ -41,5 +70,5 @@
 </tr>
 
 <Modal isOpen={editing} onClose={() => (editing = false)}>
-	<TaskForm {task} afterSave={() => (editing = false)} />
+	<TaskForm {group} {task} afterSave={() => (editing = false)} />
 </Modal>

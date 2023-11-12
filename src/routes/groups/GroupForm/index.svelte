@@ -11,39 +11,15 @@
 	<div class="card-header">
 		<p class="card-header-title is-flex is-justify-content-space-between">
 			{#if group}Edit group{:else}Create new task group{/if}
-
-			<!-- {#if group}
-				<form
-					id="deleteForm"
-					method="POST"
-					action="?/deleteTask"
-					use:enhance={({ cancel }) => {
-						console.log('SUBMIT');
-						if (!confirm('Are you sure you want to delete this task?')) {
-							cancel();
-							return;
-						}
-
-						return async ({ update }) => {
-							update();
-						};
-					}}
-				>
-					<input name="id" type="hidden" value={task?._id} />
-					<button class="button is-danger is-outlined" type="submit">
-						<span class="icon"><i class="fa-regular fa-trash-can" /></span>
-					</button>
-				</form>
-			{/if} -->
 		</p>
 	</div>
 	<div class="card-content">
 		<form
 			method="POST"
-			action={group ? '?/updateGroup' : '?/createGroup'}
+			action={group ? '/groups?/updateGroup' : '/groups?/createGroup'}
 			use:enhance={() => {
 				return async ({ update }) => {
-					update();
+					await update();
 					afterSave();
 				};
 			}}
@@ -55,6 +31,7 @@
 			<label class="field">
 				<span class="label">Name</span>
 				<div class="control">
+					<!-- svelte-ignore a11y-autofocus-->
 					<input
 						name="name"
 						class="input"
@@ -62,6 +39,7 @@
 						placeholder="Kitchen tasks"
 						required
 						value={group?.name ?? ''}
+						autofocus
 					/>
 				</div>
 				<p class="help has-text-grey-light">

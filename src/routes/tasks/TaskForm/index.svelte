@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { WithStringId } from '$lib/db';
-	import { IntervalUnit, type Task } from '$lib/db/models';
+	import { IntervalUnit, type Task, type TaskGroup } from '$lib/db/models';
 
+	export let group: WithStringId<TaskGroup>;
 	export let task: WithStringId<Task> | undefined = undefined;
 	export let afterSave: () => void = () => {};
 </script>
@@ -11,36 +12,12 @@
 	<div class="card-header">
 		<p class="card-header-title is-flex is-justify-content-space-between">
 			{#if task}Edit task{:else}Create new task{/if}
-
-			{#if task}
-				<form
-					id="deleteForm"
-					method="POST"
-					action="?/deleteTask"
-					use:enhance={({ cancel }) => {
-						console.log('SUBMIT');
-						if (!confirm('Are you sure you want to delete this task?')) {
-							cancel();
-							return;
-						}
-
-						return async ({ update }) => {
-							update();
-						};
-					}}
-				>
-					<input name="id" type="hidden" value={task?._id} />
-					<button class="button is-danger is-outlined" type="submit">
-						<span class="icon"><i class="fa-regular fa-trash-can" /></span>
-					</button>
-				</form>
-			{/if}
 		</p>
 	</div>
 	<div class="card-content">
 		<form
 			method="POST"
-			action={task ? '?/updateTask' : '?/createTask'}
+			action={task ? '/tasks?/updateTask' : '/tasks?/createTask'}
 			use:enhance={() => {
 				return async ({ update }) => {
 					update();
@@ -48,6 +25,7 @@
 				};
 			}}
 		>
+			<input name="groupId" type="hidden" value={group._id} />
 			{#if task}
 				<input name="id" type="hidden" value={task?._id} />
 			{/if}
@@ -55,6 +33,7 @@
 			<label class="field">
 				<span class="label">Name</span>
 				<div class="control">
+					<!-- svelte-ignore a11y-autofocus-->
 					<input
 						name="name"
 						class="input"
@@ -62,6 +41,7 @@
 						placeholder="Text input"
 						required
 						value={task?.name ?? ''}
+						autofocus
 					/>
 				</div>
 				<p class="help has-text-grey-light">

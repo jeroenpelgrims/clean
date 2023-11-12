@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte';
 	import type { PageData } from './$types';
-	import GroupForm from './GroupForm/index.svelte';
 	import TaskGroup from './TaskGroup/index.svelte';
+	import GroupForm from './groups/GroupForm/index.svelte';
 	import { manageGroups, manageTasks } from './page.store';
 
 	export let data: PageData;
@@ -43,6 +43,19 @@
 {#each data.selectedTeam.taskGroups as group}
 	<TaskGroup {group} />
 {/each}
+
+{#if $manageGroups}
+	<div class="level">
+		<div class="level-item">
+			<button class="button" on:click={() => (addGroupModalOpen = true)}>
+				<span class="icon is-small">
+					<i class="fas fa-plus" />
+				</span>
+				<span>Add group</span>
+			</button>
+		</div>
+	</div>
+{/if}
 
 <Modal isOpen={addGroupModalOpen} onClose={() => (addGroupModalOpen = false)}>
 	<GroupForm afterSave={() => (addGroupModalOpen = false)} />
