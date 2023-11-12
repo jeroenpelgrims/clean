@@ -6,8 +6,19 @@
 	export let group: WithStringId<TaskGroup>;
 </script>
 
-<div class="section">
-	<div class="title is-5">{group.name}</div>
+<div class="section is-small">
+	<div
+		class="title is-5 is-flex is-justify-content-space-between is-align-items-center"
+	>
+		<a href="#">{group.name}</a>
+
+		<button class="button">
+			<span class="icon is-small">
+				<i class="fas fa-plus" />
+			</span>
+			<span>Add task</span>
+		</button>
+	</div>
 	<table class="table is-fullwidth is-striped is-narrow">
 		<thead>
 			<tr>

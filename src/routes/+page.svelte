@@ -1,39 +1,30 @@
 <script lang="ts">
+	import Modal from '$lib/components/Modal.svelte';
 	import type { PageData } from './$types';
-	import TaskForm from './TaskForm/index.svelte';
+	import GroupForm from './GroupForm/index.svelte';
 	import TaskGroup from './TaskGroup/index.svelte';
 
 	export let data: PageData;
 	const { selectedTeam } = data;
-	console.log(selectedTeam);
+	let addGroupModalOpen = false;
 </script>
 
-{#each selectedTeam.taskGroups as group}
+{#each data.selectedTeam.taskGroups as group}
 	<TaskGroup {group} />
 {/each}
 
 <div id="addButtons" class="is-flex is-justify-content-center">
-	<button class="button">
+	<button class="button" on:click={() => (addGroupModalOpen = true)}>
 		<span class="icon is-small">
 			<i class="fas fa-plus" />
 		</span>
 		<span>Add new group</span>
 	</button>
-	<button class="button">
-		<span class="icon is-small">
-			<i class="fas fa-plus" />
-		</span>
-		<span>Add new task</span>
-	</button>
 </div>
 
-<div class="section">
-	<div class="columns">
-		<div class="column is-half is-offset-one-quarter">
-			<TaskForm />
-		</div>
-	</div>
-</div>
+<Modal isOpen={addGroupModalOpen} onClose={() => (addGroupModalOpen = false)}>
+	<GroupForm afterSave={() => (addGroupModalOpen = false)} />
+</Modal>
 
 <style lang="scss">
 	#addButtons {

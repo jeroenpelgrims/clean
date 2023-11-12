@@ -38,5 +38,5 @@
 </tr>
 
 <Modal isOpen={editing} onClose={() => (editing = false)}>
-	<TaskForm {task} onClose={() => (editing = false)} />
+	<TaskForm {task} afterSave={() => (editing = false)} />
 </Modal>
