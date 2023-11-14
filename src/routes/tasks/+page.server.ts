@@ -28,12 +28,33 @@ export const actions = {
 		await close();
 	},
 	updateTask: async ({ request }) => {
-		// const data = await request.formData();
-		// const task = formDataToTask(data);
-		// const id = data.get('id')?.toString()!;
-		// const { teams, close } = await connect();
-		// await tasks.updateOne({ _id: new ObjectId(id) }, { $set: task });
-		// await close();
+		const data = await request.formData();
+		const task = formDataToTask(data);
+		const id = data.get('id')?.toString()!;
+		const groupId = data.get('groupId')!.toString();
+		const { teams, close } = await connect();
+		await teams.updateOne(
+			{
+				_id: selectedTeamId,
+				'taskGroups._id': ObjectId.createFromHexString(groupId),
+				'taskGroups.tasks._id': ObjectId.createFromHexString(id),
+			},
+			{
+				$set: {
+					'taskGroups.$[taskGroup].tasks.$[task]': {
+						...task,
+						_id: ObjectId.createFromHexString(id),
+					},
+				},
+			},
+			{
+				arrayFilters: [
+					{ 'taskGroup._id': ObjectId.createFromHexString(groupId) },
+					{ 'task._id': ObjectId.createFromHexString(id) },
+				],
+			},
+		);
+		await close();
 	},
 	deleteTask: async ({ request }) => {
 		const data = await request.formData();
