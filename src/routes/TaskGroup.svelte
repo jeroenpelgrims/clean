@@ -3,10 +3,10 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import type { WithStringId } from '$lib/db';
 	import type { TaskGroup } from '$lib/db/models';
-	import TaskLine from '../TaskLine.svelte';
-	import GroupForm from '../groups/GroupForm/index.svelte';
-	import { manageGroups, manageTasks } from '../page.store';
-	import TaskForm from '../tasks/TaskForm/index.svelte';
+	import TaskLine from './TaskLine.svelte';
+	import GroupForm from './groups/GroupForm/index.svelte';
+	import { manageGroups, manageTasks } from './page.store';
+	import TaskForm from './tasks/TaskForm/index.svelte';
 
 	export let group: WithStringId<TaskGroup>;
 	let editGroupModalOpen = false;

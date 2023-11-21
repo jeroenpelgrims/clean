@@ -31,6 +31,7 @@
   },
   "type": "module",
   "dependencies": {
+    "bulma-calendar": "^6.1.19",
     "mongodb": "^6.2.0"
   }
 }

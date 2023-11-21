@@ -4,11 +4,13 @@
 	import type { WithStringId } from '$lib/db';
 	import type { Task, TaskGroup } from '$lib/db/models';
 	import { manageGroups, manageTasks } from './page.store';
+	import LogForm from './tasks/LogForm/index.svelte';
 	import TaskForm from './tasks/TaskForm/index.svelte';
 
 	export let group: WithStringId<TaskGroup>;
 	export let task: WithStringId<Task>;
 	let editing = false;
+	let logging = false;
 </script>
 
 <tr>
@@ -59,7 +61,11 @@
 					</button>
 				</form>
 			{:else}
-				<button class="button is-success is-light" title="Mark as completed">
+				<button
+					class="button is-success is-light"
+					title="Mark as completed"
+					on:click={() => (logging = true)}
+				>
 					<span class="icon">
 						<i class="fa-solid fa-check" />
 					</span>
@@ -71,4 +77,8 @@
 
 <Modal isOpen={editing} onClose={() => (editing = false)}>
 	<TaskForm {group} {task} afterSave={() => (editing = false)} />
+</Modal>
+
+<Modal isOpen={logging} onClose={() => (logging = false)}>
+	<LogForm {task} afterSave={() => (logging = false)} />
 </Modal>
