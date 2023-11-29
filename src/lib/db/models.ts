@@ -1,4 +1,4 @@
-import type { WithId } from 'mongodb';
+import type { ObjectId, WithId } from 'mongodb';
 
 export enum IntervalUnit {
 	Day = 'day',
@@ -21,4 +21,9 @@ export interface TaskGroup {
 export interface Team {
 	name: string;
 	taskGroups: WithId<TaskGroup>[];
+}
+
+export interface TaskLog {
+	taskId: ObjectId;
+	timestamp: Date;
 }

@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { MongoClient, type EnhancedOmit, type WithId } from 'mongodb';
-import type { Team } from './models';
+import type { TaskLog, Team } from './models';
 
 export type WithStringId<T, TDocument = EnhancedOmit<T, '_id'>> = {
 	[K in keyof TDocument]: TDocument[K] extends any[]
@@ -27,10 +27,12 @@ export async function connect() {
 	const client = await mongo.connect();
 	const db = mongo.db('clean');
 	const teams = db.collection<Team>('teams');
+	const tasklog = db.collection<TaskLog>('tasklog');
 
 	return {
 		close: () => client.close(),
 		db,
 		teams,
+		tasklog,
 	};
 }

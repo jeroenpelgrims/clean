@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { enhance } from '$app/forms';
 	import type { WithStringId } from '$lib/db';
 	import type { Task } from '$lib/db/models';
 	import 'bulma-calendar/dist/css/bulma-calendar.min.css';
@@ -18,6 +19,7 @@
 		var calendars = new bulmaCalendar.default('input[type="date"]', {
 			displayMode: 'inline',
 			maxDate: new Date(),
+			dateFormat: 'yyyy-MM-dd',
 		});
 	});
 </script>
@@ -28,9 +30,16 @@
 			Mark "{task.name}" as done
 		</p>
 	</div>
-	<div class="card-content">
+	<form
+		class="card-content"
+		method="POST"
+		action="/tasklog?/logDone"
+		use:enhance
+	>
+		<input name="id" type="hidden" value={task._id} />
+
 		{#if !showCalendar}
-			<div class="level is-justify-content-center">
+			<div class="section">
 				<p>We'll assume you completed this task today</p>
 
 				<button class="button" on:click={() => (showCalendar = true)}>
@@ -40,17 +49,26 @@
 		{/if}
 
 		<div class="level is-justify-content-center" class:hidden={!showCalendar}>
-			<input type="date" value={new Date().toISOString().substring(0, 10)} />
+			<input
+				name="timestamp"
+				type="date"
+				value={new Date().toISOString().substring(0, 10)}
+				required
+			/>
 		</div>
 
 		<div class="level is-justify-content-center">
 			<button class="button is-primary is-large"> Mark as done </button>
 		</div>
-	</div>
+	</form>
 </div>
 
 <style lang="scss">
 	.hidden {
 		display: none;
+	}
+
+	p {
+		display: block;
 	}
 </style>
