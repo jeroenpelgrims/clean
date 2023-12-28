@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
 	integer,
 	primaryKey,
@@ -7,18 +8,54 @@ import {
 
 export const user = sqliteTable('user', {
 	id: text('id').primaryKey(),
-	username: text('username').notNull().unique(),
-	passwordHash: text('password').notNull(),
+	name: text('name'),
+	email: text('email').notNull().unique(),
+	emailVerified: integer('emailVerified', { mode: 'timestamp' }),
+	image: text('image'),
+	// username: text('username').notNull().unique(),
+	// passwordHash: text('password').notNull(),
 });
 
-// export const userRelations = relations(user, ({ many }) => ({
-// 	teams: many(team),
-// }));
+export const account = sqliteTable('account', {
+	id: text('id').primaryKey(),
+	userId: text('userId').references(() => user.id, { onDelete: 'cascade' }),
+	type: text('type'),
+	provider: text('provider'),
+	providerAccountId: text('providerAccountId'),
+	refresh_token: text('refresh_token'),
+	access_token: text('access_token'),
+	expires_at: integer('expires_at'),
+	token_type: text('token_type'),
+	scope: text('scope'),
+	id_token: text('id_token'),
+	session_state: text('session_state'),
+});
+
+export const session = sqliteTable('session', {
+	id: text('id'),
+	expires: integer('expires', { mode: 'timestamp' }).notNull(),
+	sessionToken: text('sessionToken'),
+	userId: text('userId').references(() => user.id, { onDelete: 'cascade' }),
+});
+
+export const verificationToken = sqliteTable('verificationToken', {
+	id: text('identifier'),
+	token: text('token'),
+	expires: integer('expires', { mode: 'timestamp' }).notNull(),
+});
+
+export const userRelations = relations(user, ({ many }) => ({
+	memberOf: many(teamUser),
+}));
 
 export const team = sqliteTable('team', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 });
+
+export const teamRelations = relations(team, ({ many }) => ({
+	members: many(teamUser),
+}));
 
 export const teamUser = sqliteTable(
 	'teamUser',
@@ -35,9 +72,16 @@ export const teamUser = sqliteTable(
 	}),
 );
 
-// export const teamRelations = relations(team, ({ many }) => ({
-// 	users: many(user),
-// }));
+export const teamUserRelations = relations(teamUser, ({ one }) => ({
+	team: one(team, {
+		fields: [teamUser.teamId],
+		references: [team.id],
+	}),
+	member: one(user, {
+		fields: [teamUser.userId],
+		references: [user.id],
+	}),
+}));
 
 export const taskGroup = sqliteTable('taskGroup', {
 	id: text('id').primaryKey(),

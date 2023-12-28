@@ -1,15 +1,12 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal.svelte';
 	import type { PageData } from './$types';
-	import TaskGroup from './TaskGroup.svelte';
-	import GroupForm from './groups/GroupForm/index.svelte';
-	import { manageGroups, manageTasks } from './page.store';
 
 	export let data: PageData;
 	let addGroupModalOpen = false;
 </script>
 
-<div class="is-flex is-justify-content-flex-end gap-1">
+foo
+<!-- <div class="is-flex is-justify-content-flex-end gap-1">
 	{#if $manageGroups || $manageTasks}
 		<button
 			class="button is-danger"
@@ -65,4 +62,4 @@
 	#addButtons {
 		gap: 0.25rem;
 	}
-</style>
+</style> -->

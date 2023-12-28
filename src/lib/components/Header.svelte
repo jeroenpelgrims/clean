@@ -1,8 +1,11 @@
 <script lang="ts">
+	import type { User } from '@auth/core/types';
+
 	let menuOpen = false;
 
-	export let userTeams: { _id: string; name: string }[];
-	export let selectedTeamId: string;
+	export let user: User | undefined = undefined;
+	export let userTeams: { id: string; name: string }[];
+	export let selectedTeamId: string | undefined;
 </script>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -33,19 +36,27 @@
 				<div class="select">
 					<select>
 						{#each userTeams as team}
-							<option value={team._id} selected={team._id === selectedTeamId}>
+							<option value={team.id} selected={team.id === selectedTeamId}>
 								{team.name}
 							</option>
 						{/each}
 					</select>
 				</div>
 			</div>
-			<div class="navbar-item">
-				<a href="/notifications">Notifications</a>
-			</div>
-			<div class="navbar-item">
-				<a href="/profile">Profile</a>
-			</div>
+
+			{#if user}
+				<!-- User: {JSON.stringify(user)} -->
+				<div class="navbar-item">
+					<a href="/auth/signout">Log out</a>
+				</div>
+			{:else}
+				<!-- <div class="navbar-item">
+					<a href="/auth/register">register</a>
+				</div> -->
+				<div class="navbar-item">
+					<a href="/auth/signin">Log in</a>
+				</div>
+			{/if}
 		</div>
 	</div>
 </nav>
