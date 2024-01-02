@@ -89,10 +89,10 @@ export const taskGroup = sqliteTable('taskGroup', {
 	teamId: text('teamId').references(() => team.id, { onDelete: 'cascade' }),
 });
 
-// export const taskGroupRelations = relations(taskGroup, ({ one, many }) => ({
-// 	team: one(team),
-// 	tasks: many(task),
-// }));
+export const taskGroupRelations = relations(taskGroup, ({ one, many }) => ({
+	team: one(team),
+	tasks: many(task),
+}));
 
 export const task = sqliteTable('task', {
 	id: text('id').primaryKey(),
@@ -106,10 +106,13 @@ export const task = sqliteTable('task', {
 	}),
 });
 
-// export const taskRelations = relations(task, ({ one, many }) => ({
-// 	group: one(taskGroup),
-// 	logs: many(taskLog),
-// }));
+export const taskRelations = relations(task, ({ one, many }) => ({
+	group: one(taskGroup, {
+		fields: [task.taskGroupId],
+		references: [taskGroup.id],
+	}),
+	// logs: many(taskLog),
+}));
 
 export const taskLog = sqliteTable('taskLog', {
 	id: text('id').primaryKey(),

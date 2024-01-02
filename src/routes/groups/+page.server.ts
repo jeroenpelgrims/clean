@@ -1,41 +1,54 @@
-import { connect } from '$lib/db/index.js';
-import { ObjectId } from 'mongodb';
-
-const selectedTeamId = ObjectId.createFromHexString('654fed087cd3fce0efca2ad3');
+import { db } from '$lib/db/index.js';
+import { taskGroup } from '$lib/db/schema.js';
+import { canUserManageGroup } from '$lib/db/taskGroup.js';
+import { getSelectedTeamId, isUserInTeam } from '$lib/db/userTeam.js';
+import { eq } from 'drizzle-orm';
+import { v4 as uuid } from 'uuid';
 
 export const actions = {
-	createGroup: async ({ request }) => {
+	createGroup: async ({ request, cookies, locals }) => {
+		const session = await locals.getSession();
+		const selectedTeamId = await getSelectedTeamId(session, cookies);
 		const data = await request.formData();
 		const name = data.get('name')!.toString();
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{ _id: selectedTeamId },
-			{ $push: { taskGroups: { _id: new ObjectId(), name, tasks: [] } } },
-		);
-		await close();
-	},
-	updateGroup: async ({ request }) => {
-		const data = await request.formData();
-		const name = data.get('name')!.toString();
-		const id = data.get('id')!.toString();
-		const _id = ObjectId.createFromHexString(id);
+		const isUserTeam = await isUserInTeam(session?.user?.id, selectedTeamId);
 
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{ _id: selectedTeamId, 'taskGroups._id': _id },
-			{ $set: { 'taskGroups.$.name': name } },
-		);
-		await close();
+		if (!isUserTeam) {
+			throw new Error('User is not in selected team');
+		}
+
+		await db
+			.insert(taskGroup)
+			.values({ id: uuid(), name, teamId: selectedTeamId })
+			.execute();
 	},
-	deleteGroup: async ({ request }) => {
+	updateGroup: async ({ request, locals }) => {
+		const session = await locals.getSession();
+		const userId = session?.user?.id;
 		const data = await request.formData();
-		const id = data.get('id')!.toString();
-		const _id = ObjectId.createFromHexString(id);
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{ _id: selectedTeamId },
-			{ $pull: { taskGroups: { _id } } },
-		);
-		await close();
+		const name = data.get('name')!.toString();
+		const groupId = data.get('id')!.toString();
+
+		const userCanManageGroup = await canUserManageGroup(userId, groupId);
+
+		if (!userCanManageGroup) {
+			throw new Error('User cannot manage group');
+		}
+
+		await db
+			.update(taskGroup)
+			.set({ name })
+			.where(eq(taskGroup.id, groupId))
+			.execute();
+	},
+	deleteGroup: async ({ request, locals }) => {
+		const session = await locals.getSession();
+		const userId = session?.user?.id;
+		const data = await request.formData();
+		const groupId = data.get('id')!.toString();
+
+		const userCanManageGroup = await canUserManageGroup(userId, groupId);
+
+		await db.delete(taskGroup).where(eq(taskGroup.id, groupId)).execute();
 	},
 };

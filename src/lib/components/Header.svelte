@@ -31,28 +31,23 @@
 
 	<div class="navbar-menu" class:is-active={menuOpen}>
 		<div class="navbar-end">
-			<div class="navbar-item">
-				Team:
-				<div class="select">
-					<select>
-						{#each userTeams as team}
-							<option value={team.id} selected={team.id === selectedTeamId}>
-								{team.name}
-							</option>
-						{/each}
-					</select>
-				</div>
-			</div>
-
 			{#if user}
-				<!-- User: {JSON.stringify(user)} -->
+				<div class="navbar-item">
+					Team:
+					<div class="select">
+						<select>
+							{#each userTeams as team}
+								<option value={team.id} selected={team.id === selectedTeamId}>
+									{team.name}
+								</option>
+							{/each}
+						</select>
+					</div>
+				</div>
 				<div class="navbar-item">
 					<a href="/auth/signout">Log out</a>
 				</div>
 			{:else}
-				<!-- <div class="navbar-item">
-					<a href="/auth/register">register</a>
-				</div> -->
 				<div class="navbar-item">
 					<a href="/auth/signin">Log in</a>
 				</div>

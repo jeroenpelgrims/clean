@@ -1,4 +1,5 @@
-import type { ObjectId, WithId } from 'mongodb';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { task, taskGroup, user } from './schema';
 
 export enum IntervalUnit {
 	Day = 'day',
@@ -7,23 +8,6 @@ export enum IntervalUnit {
 	Year = 'year',
 }
 
-export interface Task {
-	name: string;
-	intervalValue: number;
-	intervalUnit: IntervalUnit;
-}
-
-export interface TaskGroup {
-	name: string;
-	tasks: WithId<Task>[];
-}
-
-export interface Team {
-	name: string;
-	taskGroups: WithId<TaskGroup>[];
-}
-
-export interface TaskLog {
-	taskId: ObjectId;
-	timestamp: Date;
-}
+export type User = InferSelectModel<typeof user>;
+export type Task = InferSelectModel<typeof task>;
+export type TaskGroup = InferSelectModel<typeof taskGroup>;

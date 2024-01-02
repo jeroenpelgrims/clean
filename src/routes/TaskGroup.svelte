@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/Modal.svelte';
-	import type { WithStringId } from '$lib/db';
-	import type { TaskGroup } from '$lib/db/models';
+	import type { Task, TaskGroup } from '$lib/db/models';
 	import TaskLine from './TaskLine.svelte';
 	import GroupForm from './groups/GroupForm/index.svelte';
 	import { manageGroups, manageTasks } from './page.store';
 	import TaskForm from './tasks/TaskForm/index.svelte';
 
-	export let group: WithStringId<TaskGroup>;
+	export let group: TaskGroup & { tasks: Task[] };
 	let editGroupModalOpen = false;
 	let addTaskModalOpen = false;
 </script>
@@ -39,7 +38,7 @@
 						};
 					}}
 				>
-					<input name="id" type="hidden" value={group?._id} />
+					<input name="id" type="hidden" value={group.id} />
 					<button type="submit" class="button is-danger is-light">
 						<span class="icon is-small">
 							<i class="fas fa-trash-can" />

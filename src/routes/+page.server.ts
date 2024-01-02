@@ -1,23 +1,28 @@
 import '$lib/db';
-import { ObjectId } from 'mongodb';
+import { db } from '$lib/db';
+import { taskGroup } from '$lib/db/schema';
+import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
-const selectedTeamId = ObjectId.createFromHexString('654fed087cd3fce0efca2ad3');
-
 export const load: PageServerLoad = async ({ parent }) => {
-	// const foo = await db.query.user.findFirst({ where: and(eq(user.id, '')) });
-	// client.close();
-	// const { selectedTeamId } = await parent();
-	// const { close, teams } = await connect();
-	// const selectedTeam = (await teams.findOne({
-	// 	_id: new ObjectId(selectedTeamId),
-	// }))!;
-	// await close();
+	const { user, selectedTeamId } = await parent();
+	const taskGroups = await getTaskGroups(selectedTeamId);
 
 	return {
-		// selectedTeam: serializeId(selectedTeam),
-		selectedTeam: {
-			taskGroups: [],
-		},
+		taskGroups,
 	};
 };
+
+async function getTaskGroups(teamId: string | undefined) {
+	if (!teamId) {
+		return [];
+	}
+
+	const taskGroups = await db.query.taskGroup.findMany({
+		where: eq(taskGroup.teamId, teamId),
+		with: {
+			tasks: true,
+		},
+	});
+	return taskGroups;
+}

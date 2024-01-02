@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { WithStringId } from '$lib/db';
 	import type { TaskGroup } from '$lib/db/models';
 
-	export let group: WithStringId<TaskGroup> | undefined = undefined;
+	export let group: TaskGroup | undefined = undefined;
 	export let afterSave: () => void = () => {};
 </script>
 
@@ -25,7 +24,7 @@
 			}}
 		>
 			{#if group}
-				<input name="id" type="hidden" value={group?._id} />
+				<input name="id" type="hidden" value={group?.id} />
 			{/if}
 
 			<label class="field">

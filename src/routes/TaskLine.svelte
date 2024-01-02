@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/Modal.svelte';
-	import type { WithStringId } from '$lib/db';
 	import type { Task, TaskGroup } from '$lib/db/models';
 	import { manageGroups, manageTasks } from './page.store';
 	import LogForm from './tasks/LogForm/index.svelte';
 	import TaskForm from './tasks/TaskForm/index.svelte';
 
-	export let group: WithStringId<TaskGroup>;
-	export let task: WithStringId<Task>;
+	export let group: TaskGroup;
+	export let task: Task;
 	let editing = false;
 	let logging = false;
 </script>
@@ -19,7 +18,7 @@
 		<div class="is-size-7">Every {task.intervalValue} {task.intervalUnit}</div>
 	</td>
 	<td class="is-vcentered">
-		<span class="tag is-danger is-light">In 2 days</span>
+		<span class="tag is-danger is-light">Due in 2 days</span>
 	</td>
 	<td class="is-flex is-justify-content-flex-end gap-1">
 		{#if !$manageGroups}
@@ -48,8 +47,8 @@
 						};
 					}}
 				>
-					<input name="groupId" type="hidden" value={group._id} />
-					<input name="id" type="hidden" value={task?._id} />
+					<input name="groupId" type="hidden" value={group.id} />
+					<input name="id" type="hidden" value={task.id} />
 					<button
 						class="button is-danger is-light"
 						title="Remove task"
