@@ -83,15 +83,15 @@ export const authConfig: SvelteKitAuthConfig = {
 	],
 	callbacks: {
 		async signIn({ user, account, profile, email, credentials }) {
-			console.log({ user, account, profile, email, credentials });
+			// console.log({ user, account, profile, email, credentials });
 			return true;
 		},
 		async jwt({ token, user, account, profile, trigger }) {
-			console.log('jwt token', token);
-			console.log('jwt user', user);
-			console.log('jwt account', account);
-			console.log('jwt profile', profile);
-			console.log('jwt trigger', trigger);
+			// console.log('jwt token', token);
+			// console.log('jwt user', user);
+			// console.log('jwt account', account);
+			// console.log('jwt profile', profile);
+			// console.log('jwt trigger', trigger);
 
 			if (trigger === 'signUp') {
 				await initializeNewUser(user.id);
@@ -100,9 +100,9 @@ export const authConfig: SvelteKitAuthConfig = {
 			return { ...token, user: token.user ?? user };
 		},
 		async session({ session, token, user }) {
-			console.log('session session', session);
-			console.log('session token', token);
-			console.log('session user', user);
+			// console.log('session session', session);
+			// console.log('session token', token);
+			// console.log('session user', user);
 			return { ...session, user: token.user as any };
 		},
 	},

@@ -71,3 +71,18 @@ async function getFirstTeamForUser(userId: string) {
 		.get();
 	return firstTeam;
 }
+
+export async function getUserTeams(userId: string | undefined) {
+	if (!userId) {
+		return [];
+	}
+
+	const userTeams = await db
+		.select({ id: team.id, name: team.name })
+		.from(team)
+		.innerJoin(teamUser, eq(team.id, teamUser.teamId))
+		.where(eq(teamUser.userId, userId!))
+		.execute();
+
+	return userTeams;
+}

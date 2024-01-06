@@ -7,7 +7,7 @@
 </script>
 
 <main class="container is-max-desktop">
-	<Header {...data} />
+	<Header user={data.user} selectedTeam={data.selectedTeam} />
 
 	<slot />
 </main>

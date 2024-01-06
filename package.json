@@ -43,8 +43,9 @@
 		"@types/bcrypt": "^5.0.2",
 		"@types/uuid": "^9.0.7",
 		"bcrypt": "^5.1.1",
-		"bulma-calendar": "^6.1.19",
+		"dayjs": "^1.11.10",
 		"drizzle-orm": "^0.29.1",
+		"flatpickr": "^4.6.13",
 		"nodemailer": "^6.9.7",
 		"uuid": "^9.0.1"
 	}

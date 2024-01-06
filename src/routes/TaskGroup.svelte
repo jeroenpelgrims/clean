@@ -8,6 +8,7 @@
 	import TaskForm from './tasks/TaskForm/index.svelte';
 
 	export let group: TaskGroup & { tasks: Task[] };
+	export let lastCompleted: Map<string, Date | null>;
 	let editGroupModalOpen = false;
 	let addTaskModalOpen = false;
 </script>
@@ -53,7 +54,7 @@
 		<table class="table is-fullwidth is-striped is-narrow is-hoverable">
 			<tbody>
 				{#each group.tasks as task}
-					<TaskLine {task} {group} />
+					<TaskLine {task} {group} lastCompleted={lastCompleted.get(task.id)} />
 				{/each}
 			</tbody>
 		</table>

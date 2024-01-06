@@ -5,7 +5,13 @@
 
 {#if isOpen}
 	<div class="modal" class:is-active={isOpen}>
-		<div class="modal-background" on:click={onClose} />
+		<div
+			class="modal-background"
+			role="button"
+			tabindex={-1}
+			on:click={onClose}
+			on:keyup={onClose}
+		/>
 		<div class="modal-content">
 			<slot />
 		</div>

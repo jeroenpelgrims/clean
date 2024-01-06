@@ -1,25 +1,24 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
-	import type { WithStringId } from '$lib/db';
 	import type { Task } from '$lib/db/models';
-	import 'bulma-calendar/dist/css/bulma-calendar.min.css';
+	import dayjs from 'dayjs';
+	import 'flatpickr/dist/flatpickr.min.css';
 	import { onMount } from 'svelte';
 
-	export let task: WithStringId<Task>;
+	export let task: Task;
 	export let afterSave: () => void = () => {};
 
-	let showCalendar = false;
+	let timestamp: Date = new Date();
 
 	onMount(async () => {
-		if (!browser) {
-			return;
-		}
-		const bulmaCalendar = await import('bulma-calendar');
-		var calendars = new bulmaCalendar.default('input[type="date"]', {
-			displayMode: 'inline',
+		const flatpickr = await import('flatpickr');
+		flatpickr.default("input[type='date']", {
+			inline: true,
+			enableTime: true,
+			time_24hr: true,
 			maxDate: new Date(),
-			dateFormat: 'yyyy-MM-dd',
+			defaultDate: timestamp,
+			minuteIncrement: 1,
 		});
 	});
 </script>
@@ -27,37 +26,37 @@
 <div class="card">
 	<div class="card-header">
 		<p class="card-header-title is-flex is-justify-content-space-between">
-			Mark "{task.name}" as done
+			When did you complete "{task.name}"?
 		</p>
 	</div>
 	<form
 		class="card-content"
 		method="POST"
 		action="/tasklog?/logDone"
-		use:enhance
+		use:enhance={() => {
+			return async ({ update }) => {
+				update();
+				afterSave();
+			};
+		}}
 	>
-		<input name="id" type="hidden" value={task._id} />
+		<input name="id" type="hidden" value={task.id} />
 
-		{#if !showCalendar}
-			<div class="section">
-				<p>We'll assume you completed this task today</p>
-
-				<button class="button" on:click={() => (showCalendar = true)}>
-					Choose a different day
-				</button>
-			</div>
-		{/if}
-
-		<div class="level is-justify-content-center" class:hidden={!showCalendar}>
+		<div class="level is-justify-content-center">
 			<input
 				name="timestamp"
 				type="date"
-				value={new Date().toISOString().substring(0, 10)}
+				value={dayjs(timestamp).toISOString()}
+				on:change={(e) => {
+					timestamp = dayjs(e.currentTarget.value).toDate();
+				}}
 				required
+				class="hidden"
 			/>
 		</div>
 
-		<div class="level is-justify-content-center">
+		<div class="is-flex level is-justify-content-center gap-2">
+			<button class="button is-large" on:click={afterSave}>Cancel</button>
 			<button class="button is-primary is-large"> Mark as done </button>
 		</div>
 	</form>

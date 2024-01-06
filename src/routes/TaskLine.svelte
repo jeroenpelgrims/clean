@@ -2,12 +2,15 @@
 	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/Modal.svelte';
 	import type { Task, TaskGroup } from '$lib/db/models';
+	import DueIndicator from './DueIndicator.svelte';
 	import { manageGroups, manageTasks } from './page.store';
 	import LogForm from './tasks/LogForm/index.svelte';
 	import TaskForm from './tasks/TaskForm/index.svelte';
 
 	export let group: TaskGroup;
 	export let task: Task;
+	export let lastCompleted: Date | null | undefined;
+
 	let editing = false;
 	let logging = false;
 </script>
@@ -18,7 +21,7 @@
 		<div class="is-size-7">Every {task.intervalValue} {task.intervalUnit}</div>
 	</td>
 	<td class="is-vcentered">
-		<span class="tag is-danger is-light">Due in 2 days</span>
+		<DueIndicator {task} {lastCompleted} />
 	</td>
 	<td class="is-flex is-justify-content-flex-end gap-1">
 		{#if !$manageGroups}
@@ -61,7 +64,16 @@
 				</form>
 			{:else}
 				<button
-					class="button is-success is-light"
+					class="button is-info is-light is-medium"
+					title="Show task log"
+					on:click={() => alert('This function is not implemented yet')}
+				>
+					<span class="icon">
+						<i class="fa-solid fa-magnifying-glass" />
+					</span>
+				</button>
+				<button
+					class="button is-success is-light is-medium"
 					title="Mark as completed"
 					on:click={() => (logging = true)}
 				>

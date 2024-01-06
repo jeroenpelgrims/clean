@@ -1,15 +1,15 @@
 import { db } from '$lib/db';
-import { team, teamUser } from '$lib/db/schema';
+import { team } from '$lib/db/schema';
+import { getSelectedTeamId } from '$lib/db/userTeam';
 import { getSession } from '@auth/sveltekit';
 import { eq } from 'drizzle-orm';
 import { authConfig } from '../auth/config';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ request }) => {
+export const load: LayoutServerLoad = async ({ request, cookies }) => {
 	const session = await getSession(request, authConfig);
-	const userId = session?.user?.id;
 
-	if (!userId) {
+	if (!session?.user?.id) {
 		return {
 			user: undefined,
 			userTeams: [],
@@ -17,28 +17,17 @@ export const load: LayoutServerLoad = async ({ request }) => {
 		};
 	}
 
-	const userTeams = await getUserTeams(userId);
-	// TODO: get from settings
-	const selectedTeamId = userTeams[0]?.id;
+	const selectedTeamId = await getSelectedTeamId(session, cookies);
+	const selectedTeam = await getTeamById(selectedTeamId!);
 
 	return {
 		user: session?.user,
-		userTeams,
-		selectedTeamId,
+		selectedTeam,
 	};
 };
 
-async function getUserTeams(userId: string | undefined) {
-	if (!userId) {
-		return [];
-	}
-
-	const userTeams = await db
-		.select({ id: team.id, name: team.name })
-		.from(team)
-		.innerJoin(teamUser, eq(team.id, teamUser.teamId))
-		.where(eq(teamUser.userId, userId!))
-		.execute();
-
-	return userTeams;
+function getTeamById(teamId: string) {
+	return db.query.team.findFirst({
+		where: eq(team.id, teamId),
+	});
 }

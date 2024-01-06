@@ -41,7 +41,7 @@
 </div>
 
 {#each data.taskGroups as group}
-	<TaskGroup {group} />
+	<TaskGroup {group} lastCompleted={data.lastCompleted} />
 {/each}
 
 {#if $manageGroups}
@@ -62,7 +62,4 @@
 </Modal>
 
 <style lang="scss">
-	#addButtons {
-		gap: 0.25rem;
-	}
 </style>

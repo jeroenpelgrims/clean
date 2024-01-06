@@ -119,7 +119,9 @@ export const taskRelations = relations(task, ({ one, many }) => ({
 export const taskLog = sqliteTable('taskLog', {
 	id: text('id').primaryKey(),
 	timestamp: integer('timestamp', { mode: 'timestamp' }).notNull(),
-	taskId: text('taskId').references(() => task.id, { onDelete: 'cascade' }),
+	taskId: text('taskId')
+		.references(() => task.id, { onDelete: 'cascade' })
+		.notNull(),
 });
 
 // export const taskLogRelations = relations(taskLog, ({ one }) => ({
