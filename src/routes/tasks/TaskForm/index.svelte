@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { WithStringId } from '$lib/db';
-	import { IntervalUnit, type Task, type TaskGroup } from '$lib/db/models';
+	import { IntervalUnit, type Task } from '$lib/db/models';
 
-	export let group: WithStringId<TaskGroup>;
-	export let task: WithStringId<Task> | undefined = undefined;
+	export let task: Task | undefined = undefined;
+	export let groupId: string;
+
 	export let afterSave: () => void = () => {};
 </script>
 
@@ -25,9 +25,9 @@
 				};
 			}}
 		>
-			<input name="groupId" type="hidden" value={group._id} />
+			<input name="groupId" type="hidden" value={groupId} />
 			{#if task}
-				<input name="id" type="hidden" value={task?._id} />
+				<input name="id" type="hidden" value={task?.id} />
 			{/if}
 
 			<label class="field">

@@ -75,7 +75,11 @@
 </tr>
 
 <Modal isOpen={editing} onClose={() => (editing = false)}>
-	<TaskForm {group} {task} afterSave={() => (editing = false)} />
+	<TaskForm
+		{task}
+		groupId={task.taskGroupId}
+		afterSave={() => (editing = false)}
+	/>
 </Modal>
 
 <Modal isOpen={logging} onClose={() => (logging = false)}>

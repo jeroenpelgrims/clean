@@ -86,5 +86,5 @@
 </Modal>
 
 <Modal isOpen={addTaskModalOpen} onClose={() => (addTaskModalOpen = false)}>
-	<TaskForm {group} afterSave={() => (addTaskModalOpen = false)} />
+	<TaskForm groupId={group.id} afterSave={() => (addTaskModalOpen = false)} />
 </Modal>

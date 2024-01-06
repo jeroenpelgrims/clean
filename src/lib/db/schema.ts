@@ -101,9 +101,11 @@ export const task = sqliteTable('task', {
 	intervalUnit: text('intervalUnit', {
 		enum: ['day', 'week', 'month', 'year'],
 	}).notNull(),
-	taskGroupId: text('taskGroupId').references(() => taskGroup.id, {
-		onDelete: 'cascade',
-	}),
+	taskGroupId: text('taskGroupId')
+		.notNull()
+		.references(() => taskGroup.id, {
+			onDelete: 'cascade',
+		}),
 });
 
 export const taskRelations = relations(task, ({ one, many }) => ({

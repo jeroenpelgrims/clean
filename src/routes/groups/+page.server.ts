@@ -2,6 +2,8 @@ import { db } from '$lib/db/index.js';
 import { taskGroup } from '$lib/db/schema.js';
 import { canUserManageGroup } from '$lib/db/taskGroup.js';
 import { getSelectedTeamId, isUserInTeam } from '$lib/db/userTeam.js';
+import { getUserIdFromLocals } from '$lib/sessionHelpers.js';
+import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
 
@@ -14,7 +16,7 @@ export const actions = {
 		const isUserTeam = await isUserInTeam(session?.user?.id, selectedTeamId);
 
 		if (!isUserTeam) {
-			throw new Error('User is not in selected team');
+			return fail(403);
 		}
 
 		await db
@@ -23,16 +25,14 @@ export const actions = {
 			.execute();
 	},
 	updateGroup: async ({ request, locals }) => {
-		const session = await locals.getSession();
-		const userId = session?.user?.id;
+		const userId = await getUserIdFromLocals(locals);
 		const data = await request.formData();
 		const name = data.get('name')!.toString();
 		const groupId = data.get('id')!.toString();
 
 		const userCanManageGroup = await canUserManageGroup(userId, groupId);
-
 		if (!userCanManageGroup) {
-			throw new Error('User cannot manage group');
+			return fail(403);
 		}
 
 		await db
@@ -42,12 +42,14 @@ export const actions = {
 			.execute();
 	},
 	deleteGroup: async ({ request, locals }) => {
-		const session = await locals.getSession();
-		const userId = session?.user?.id;
+		const userId = await getUserIdFromLocals(locals);
 		const data = await request.formData();
 		const groupId = data.get('id')!.toString();
 
 		const userCanManageGroup = await canUserManageGroup(userId, groupId);
+		if (!userCanManageGroup) {
+			return fail(403);
+		}
 
 		await db.delete(taskGroup).where(eq(taskGroup.id, groupId)).execute();
 	},

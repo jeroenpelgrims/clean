@@ -10,7 +10,7 @@ export async function canUserManageGroup(
 		return false;
 	}
 
-	const group = await db
+	const foundGroup = await db
 		.select()
 		.from(team)
 		.innerJoin(
@@ -20,7 +20,9 @@ export async function canUserManageGroup(
 		.innerJoin(
 			taskGroup,
 			and(eq(taskGroup.id, taskGroupId), eq(taskGroup.teamId, team.id)),
-		);
+		)
+		.limit(1)
+		.get();
 
-	return !!group;
+	return foundGroup !== undefined;
 }

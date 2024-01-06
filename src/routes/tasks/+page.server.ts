@@ -1,77 +1,64 @@
-import { connect } from '$lib/db/index.js';
+import { db } from '$lib/db/index.js';
 import type { IntervalUnit, Task } from '$lib/db/models.js';
-import { ObjectId } from 'mongodb';
+import { task } from '$lib/db/schema.js';
+import { canUserManageTask } from '$lib/db/task.js';
+import { canUserManageGroup } from '$lib/db/taskGroup.js';
+import { getUserIdFromLocals } from '$lib/sessionHelpers.js';
+import { fail } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import { v4 as uuid } from 'uuid';
 
-const selectedTeamId = ObjectId.createFromHexString('654fed087cd3fce0efca2ad3');
-
-function formDataToTask(data: FormData) {
+function formDataToTask(data: FormData): Task {
+	const id = data.get('id')?.toString() ?? uuid();
 	const name = data.get('name')!.toString();
 	const intervalValue = Number.parseInt(data.get('intervalValue')!.toString());
 	const intervalUnit = data.get('intervalUnit') as IntervalUnit;
-	const task: Task = { name, intervalValue, intervalUnit };
-	return task;
+	const taskGroupId = data.get('groupId')!.toString();
+	return { id, name, intervalValue, intervalUnit, taskGroupId };
 }
 
 export const actions = {
-	createTask: async ({ request }) => {
+	createTask: async ({ request, locals }) => {
 		const data = await request.formData();
-		const groupId = data.get('groupId')!.toString();
-		const task = formDataToTask(data);
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{
-				_id: selectedTeamId,
-				'taskGroups._id': ObjectId.createFromHexString(groupId),
-			},
-			{ $push: { 'taskGroups.$.tasks': { _id: new ObjectId(), ...task } } },
+		const newTask = formDataToTask(data);
+		const userId = await getUserIdFromLocals(locals);
+
+		const userCanManageGroup = await canUserManageGroup(
+			userId,
+			newTask.taskGroupId,
 		);
-		await close();
+		if (!userCanManageGroup) {
+			return fail(403);
+		}
+
+		await db.insert(task).values(newTask).execute();
 	},
-	updateTask: async ({ request }) => {
+	updateTask: async ({ request, locals }) => {
 		const data = await request.formData();
-		const task = formDataToTask(data);
-		const id = data.get('id')?.toString()!;
-		const groupId = data.get('groupId')!.toString();
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{
-				_id: selectedTeamId,
-				'taskGroups._id': ObjectId.createFromHexString(groupId),
-				'taskGroups.tasks._id': ObjectId.createFromHexString(id),
-			},
-			{
-				$set: {
-					'taskGroups.$[taskGroup].tasks.$[task]': {
-						...task,
-						_id: ObjectId.createFromHexString(id),
-					},
-				},
-			},
-			{
-				arrayFilters: [
-					{ 'taskGroup._id': ObjectId.createFromHexString(groupId) },
-					{ 'task._id': ObjectId.createFromHexString(id) },
-				],
-			},
-		);
-		await close();
+		const updatedTask = formDataToTask(data);
+		const userId = await getUserIdFromLocals(locals);
+
+		const userCanManageTask = await canUserManageTask(userId, updatedTask.id);
+		if (!userCanManageTask) {
+			return fail(403);
+		}
+
+		await db
+			.update(task)
+			.set(updatedTask)
+			.where(eq(task.id, updatedTask.id))
+			.execute();
 	},
-	deleteTask: async ({ request }) => {
+	deleteTask: async ({ request, locals }) => {
 		const data = await request.formData();
-		const id = data.get('id')?.toString()!;
-		const groupId = data.get('groupId')?.toString()!;
-		const { teams, close } = await connect();
-		await teams.updateOne(
-			{
-				_id: selectedTeamId,
-				'taskGroups._id': ObjectId.createFromHexString(groupId),
-			},
-			{
-				$pull: {
-					'taskGroups.$.tasks': { _id: ObjectId.createFromHexString(id) },
-				},
-			},
-		);
-		await close();
+		const taskId = data.get('id')?.toString()!;
+		const userId = await getUserIdFromLocals(locals);
+
+		const userCanManageTask = await canUserManageTask(userId, taskId);
+		if (!userCanManageTask) {
+			return fail(403);
+		}
+
+		await db.delete(task).where(eq(task.id, taskId)).execute();
 	},
 };

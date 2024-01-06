@@ -54,8 +54,9 @@ export async function isUserInTeam(
 		.select()
 		.from(team)
 		.innerJoin(teamUser, and(eq(team.id, teamId), eq(teamUser.userId, userId)))
+		.limit(1)
 		.get();
-	return !!result;
+	return result !== undefined;
 }
 
 async function getFirstTeamForUser(userId: string) {
@@ -66,18 +67,7 @@ async function getFirstTeamForUser(userId: string) {
 			teamUser,
 			and(eq(team.id, teamUser.teamId), eq(teamUser.userId, userId)),
 		)
+		.limit(1)
 		.get();
 	return firstTeam;
 }
-
-/*
-If no user, return undefined
-
-get team id from cookie,
-Check if user is in team
-if yes, return team id
-
-otherwise, return first team id for user
-
-if no user, return undefined
-*/
