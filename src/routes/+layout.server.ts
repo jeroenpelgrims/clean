@@ -3,7 +3,7 @@ import { team } from '$lib/db/schema';
 import { getSelectedTeamId } from '$lib/db/userTeam';
 import { getSession } from '@auth/sveltekit';
 import { eq } from 'drizzle-orm';
-import { authConfig } from '../auth/config';
+import { authConfig } from '../lib/auth/config';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ request, cookies }) => {

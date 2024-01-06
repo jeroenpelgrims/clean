@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Modal from '$lib/components/Modal.svelte';
+	import Modal from '$lib/components/common/Modal.svelte';
 	import type { Task, TaskGroup } from '$lib/db/models';
-	import TaskLine from './TaskLine.svelte';
-	import GroupForm from './groups/GroupForm/index.svelte';
-	import { manageGroups, manageTasks } from './page.store';
-	import TaskForm from './tasks/TaskForm/index.svelte';
+	import { manageGroups, manageTasks } from '$lib/stores/manage';
+	import TaskForm from '../tasks/TaskForm/index.svelte';
+	import TaskLine from '../tasks/TaskLine.svelte';
+	import GroupForm from './GroupForm/index.svelte';
 
 	export let group: TaskGroup & { tasks: Task[] };
 	export let lastCompleted: Map<string, Date | null>;

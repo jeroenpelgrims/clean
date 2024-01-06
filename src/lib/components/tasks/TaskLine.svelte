@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Modal from '$lib/components/Modal.svelte';
+	import Modal from '$lib/components/common/Modal.svelte';
 	import type { Task, TaskGroup } from '$lib/db/models';
+	import { manageGroups, manageTasks } from '$lib/stores/manage';
 	import DueIndicator from './DueIndicator.svelte';
-	import { manageGroups, manageTasks } from './page.store';
-	import LogForm from './tasks/LogForm/index.svelte';
-	import TaskForm from './tasks/TaskForm/index.svelte';
+	import LogForm from './LogForm/index.svelte';
+	import TaskForm from './TaskForm/index.svelte';
 
 	export let group: TaskGroup;
 	export let task: Task;

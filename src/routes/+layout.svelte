@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
+	import Header from '$lib/components/layout/Header.svelte';
 	import '../global.scss';
 	import type { LayoutData } from './$types';
 

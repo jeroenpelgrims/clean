@@ -1,9 +1,9 @@
+import { getUserIdFromLocals } from '$lib/auth/session';
 import { db } from '$lib/db/index.js';
 import type { IntervalUnit, Task } from '$lib/db/models.js';
 import { task } from '$lib/db/schema.js';
 import { canUserManageTask } from '$lib/db/task.js';
 import { canUserManageGroup } from '$lib/db/taskGroup.js';
-import { getUserIdFromLocals } from '$lib/sessionHelpers.js';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal.svelte';
+	import Modal from '$lib/components/common/Modal.svelte';
+	import GroupForm from '../lib/components/groups/GroupForm/index.svelte';
+	import TaskGroup from '../lib/components/groups/TaskGroup.svelte';
+	import { manageGroups, manageTasks } from '../lib/stores/manage';
 	import type { PageData } from './$types';
-	import TaskGroup from './TaskGroup.svelte';
-	import GroupForm from './groups/GroupForm/index.svelte';
-	import { manageGroups, manageTasks } from './page.store';
 
 	export let data: PageData;
 	let addGroupModalOpen = false;

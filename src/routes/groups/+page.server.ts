@@ -1,8 +1,8 @@
+import { getUserIdFromLocals } from '$lib/auth/session';
 import { db } from '$lib/db/index.js';
 import { taskGroup } from '$lib/db/schema.js';
 import { canUserManageGroup } from '$lib/db/taskGroup.js';
 import { getSelectedTeamId, isUserInTeam } from '$lib/db/userTeam.js';
-import { getUserIdFromLocals } from '$lib/sessionHelpers.js';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';

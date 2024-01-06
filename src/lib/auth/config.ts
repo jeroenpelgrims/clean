@@ -3,7 +3,7 @@ import { initializeNewUser } from '$lib/db/users';
 import Email from '@auth/core/providers/email';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import type { SvelteKitAuthConfig } from '@auth/sveltekit';
-import { db } from '../lib/db';
+import { db } from '../db';
 
 declare module '@auth/core' {
 	/**

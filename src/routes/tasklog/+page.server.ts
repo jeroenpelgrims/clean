@@ -1,7 +1,7 @@
+import { getUserIdFromLocals } from '$lib/auth/session';
 import { db } from '$lib/db/index.js';
 import { taskLog } from '$lib/db/schema.js';
 import { canUserManageTask } from '$lib/db/task.js';
-import { getUserIdFromLocals } from '$lib/sessionHelpers.js';
 import { fail } from '@sveltejs/kit';
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
