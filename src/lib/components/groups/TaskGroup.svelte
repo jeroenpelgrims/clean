@@ -4,7 +4,7 @@
 	import type { Task, TaskGroup } from '$lib/db/models';
 	import { manageGroups, manageTasks } from '$lib/stores/manage';
 	import TaskForm from '../tasks/TaskForm/index.svelte';
-	import TaskLine from '../tasks/TaskLine.svelte';
+	import TaskLine from '../tasks/TaskLine/index.svelte';
 	import GroupForm from './GroupForm/index.svelte';
 
 	export let group: TaskGroup & { tasks: Task[] };
@@ -19,7 +19,7 @@
 		<div class="is-flex gap-1">
 			{#if $manageGroups}
 				<button
-					class="button is-warning is-light"
+					class="button is-warning is-light is-medium"
 					on:click={() => (editGroupModalOpen = true)}
 				>
 					<span class="icon is-small">
@@ -40,7 +40,7 @@
 					}}
 				>
 					<input name="id" type="hidden" value={group.id} />
-					<button type="submit" class="button is-danger is-light">
+					<button type="submit" class="button is-danger is-light is-medium">
 						<span class="icon is-small">
 							<i class="fas fa-trash-can" />
 						</span>
@@ -51,20 +51,15 @@
 	</div>
 
 	{#if !$manageGroups}
-		<table class="table is-fullwidth is-striped is-narrow is-hoverable">
-			<tbody>
-				{#each group.tasks as task}
-					<TaskLine {task} {group} lastCompleted={lastCompleted.get(task.id)} />
-				{/each}
-			</tbody>
-		</table>
-		{#if group.tasks.length === 0}
+		{#each group.tasks as task}
+			<TaskLine {task} {group} lastCompleted={lastCompleted.get(task.id)} />
+		{:else}
 			<div class="level">
 				<div class="level-item has-text-grey-light has-text-centered">
 					This group is empty.
 				</div>
 			</div>
-		{/if}
+		{/each}
 	{/if}
 
 	{#if $manageTasks}
