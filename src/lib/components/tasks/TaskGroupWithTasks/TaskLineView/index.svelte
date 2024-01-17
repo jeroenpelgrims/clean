@@ -1,11 +1,10 @@
 <script lang="ts">
 	import Modal from '$lib/components/common/Modal.svelte';
-	import type { Task, TaskGroup } from '$lib/db/models';
+	import type { Task } from '$lib/db/models';
 	import TaskForm from '../../TaskForm/index.svelte';
 	import LogForm from '../LogForm/index.svelte';
 	import DueIndicator from './DueIndicator.svelte';
 
-	export let group: TaskGroup;
 	export let task: Task;
 	export let lastCompleted: Date | null | undefined;
 

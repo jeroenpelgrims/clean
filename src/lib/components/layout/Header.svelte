@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { Team } from '$lib/db/models';
 	import type { User } from '@auth/core/types';
 
 	let menuOpen = false;
 
 	export let user: User | undefined;
-	export let selectedTeam: Team | undefined;
+	// export let selectedTeam: Team | undefined;
 </script>
 
 <nav class="navbar" aria-label="main navigation">
@@ -53,10 +52,6 @@
 <style lang="scss">
 	:global(.navbar-brand svg) {
 		height: 2rem;
-	}
-
-	.team {
-		gap: 0.5rem;
 	}
 
 	.title {

@@ -28,11 +28,7 @@
 {#each data.taskGroups as group}
 	<TaskGroupWithTasks {group}>
 		{#each group.tasks as task}
-			<TaskLineView
-				{group}
-				{task}
-				lastCompleted={data.lastCompleted.get(task.id)}
-			/>
+			<TaskLineView {task} lastCompleted={data.lastCompleted.get(task.id)} />
 		{:else}
 			<div class="level">
 				<div class="level-item has-text-grey-light has-text-centered">
