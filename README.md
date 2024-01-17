@@ -1,3 +1,9 @@
+## Subsections
+
+- Recurring tasks
+- Weekly menu planner
+- Shopping list?
+
 Structure?
 
 - User
