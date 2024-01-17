@@ -26,3 +26,17 @@ export async function canUserManageGroup(
 
 	return foundGroup !== undefined;
 }
+
+export async function getTaskGroupsByTeamId(teamId: string | undefined) {
+	if (!teamId) {
+		return [];
+	}
+
+	const taskGroups = await db.query.taskGroup.findMany({
+		where: eq(taskGroup.teamId, teamId),
+		with: {
+			tasks: true,
+		},
+	});
+	return taskGroups;
+}

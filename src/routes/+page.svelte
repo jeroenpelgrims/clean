@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Modal from '$lib/components/common/Modal.svelte';
+	import TaskLineView from '$lib/components/tasks/TaskGroupWithTasks/TaskLineView/index.svelte';
+	import TaskGroupWithTasks from '$lib/components/tasks/TaskGroupWithTasks/index.svelte';
 	import GroupForm from '../lib/components/groups/GroupForm/index.svelte';
-	import TaskGroup from '../lib/components/groups/TaskGroup.svelte';
-	import { manageGroups, manageTasks } from '../lib/stores/manage';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -10,56 +10,39 @@
 </script>
 
 <div class="is-flex is-justify-content-flex-end gap-1">
-	{#if $manageGroups || $manageTasks}
-		<button
-			class="button is-danger"
-			on:click={() => {
-				$manageTasks = false;
-				$manageGroups = false;
-			}}
-		>
-			<span class="icon is-small">
-				<i class="fas fa-chevron-left" />
-			</span>
-			<span>Back</span>
-		</button>
-	{:else}
-		<button class="button" on:click={() => ($manageGroups = true)}>
-			<span class="icon is-small">
-				<i class="fas fa-folder-open" />
-			</span>
-			<span>Manage groups</span>
-		</button>
+	<a href="/groups/manage" class="button">
+		<span class="icon is-small">
+			<i class="fas fa-folder-open" />
+		</span>
+		<span>Manage groups</span>
+	</a>
 
-		<button class="button" on:click={() => ($manageTasks = true)}>
-			<span class="icon is-small">
-				<i class="fas fa-list-check" />
-			</span>
-			<span>Manage tasks</span>
-		</button>
-	{/if}
+	<a href="/tasks/manage" class="button">
+		<span class="icon is-small">
+			<i class="fas fa-list-check" />
+		</span>
+		<span>Manage tasks</span>
+	</a>
 </div>
 
 {#each data.taskGroups as group}
-	<TaskGroup {group} lastCompleted={data.lastCompleted} />
+	<TaskGroupWithTasks {group}>
+		{#each group.tasks as task}
+			<TaskLineView
+				{group}
+				{task}
+				lastCompleted={data.lastCompleted.get(task.id)}
+			/>
+		{:else}
+			<div class="level">
+				<div class="level-item has-text-grey-light has-text-centered">
+					This group is empty.
+				</div>
+			</div>
+		{/each}
+	</TaskGroupWithTasks>
 {/each}
-
-{#if $manageGroups}
-	<div class="level">
-		<div class="level-item">
-			<button class="button" on:click={() => (addGroupModalOpen = true)}>
-				<span class="icon is-small">
-					<i class="fas fa-plus" />
-				</span>
-				<span>Add group</span>
-			</button>
-		</div>
-	</div>
-{/if}
 
 <Modal isOpen={addGroupModalOpen} onClose={() => (addGroupModalOpen = false)}>
 	<GroupForm afterSave={() => (addGroupModalOpen = false)} />
 </Modal>
-
-<style lang="scss">
-</style>
