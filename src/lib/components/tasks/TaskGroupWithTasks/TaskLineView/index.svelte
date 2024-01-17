@@ -30,7 +30,7 @@
 			<DueIndicator {task} {lastCompleted} />
 		</div>
 		<div class="level-item">
-			<button
+			<!-- <button
 				class="button is-info is-light is-medium"
 				title="Show task log"
 				on:click={() => alert('This function is not implemented yet')}
@@ -38,7 +38,7 @@
 				<span class="icon">
 					<i class="fa-solid fa-magnifying-glass" />
 				</span>
-			</button>
+			</button> -->
 		</div>
 		<div class="level-item">
 			<button

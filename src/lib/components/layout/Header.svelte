@@ -34,10 +34,10 @@
 	<div class="navbar-menu" class:is-active={menuOpen}>
 		<div class="navbar-end">
 			{#if user}
-				<div class="navbar-item team">
+				<!-- <div class="navbar-item team">
 					<strong>{selectedTeam?.name}</strong>
 					<button class="button">Change team</button>
-				</div>
+				</div> -->
 				<div class="navbar-item">
 					<a href="/auth/signout" class="button">Log out</a>
 				</div>
