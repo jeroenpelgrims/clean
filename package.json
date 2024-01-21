@@ -48,7 +48,6 @@
 		"dayjs": "^1.11.10",
 		"drizzle-orm": "^0.29.3",
 		"flatpickr": "^4.6.13",
-		"nodemailer": "^6.9.8",
 		"uuid": "^9.0.1"
 	}
 }
