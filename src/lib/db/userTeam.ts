@@ -24,7 +24,7 @@ export async function getSelectedTeamId(
 	const firstTeam = await getFirstTeamForUser(userId);
 	const firstTeamId = firstTeam!.id;
 
-	cookies.set(SELECTED_TEAM_ID_COOKIE, firstTeamId);
+	cookies.set(SELECTED_TEAM_ID_COOKIE, firstTeamId, { path: '/' });
 
 	return firstTeamId;
 }
@@ -38,7 +38,7 @@ export async function setSelectedTeamId(
 	const isUserTeam = await isUserInTeam(userId, teamId);
 
 	if (isUserTeam) {
-		cookies.set(SELECTED_TEAM_ID_COOKIE, teamId);
+		cookies.set(SELECTED_TEAM_ID_COOKIE, teamId, { path: '/' });
 	}
 }
 

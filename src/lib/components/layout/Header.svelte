@@ -1,10 +1,18 @@
 <script lang="ts">
 	import type { User } from '@auth/core/types';
+	import { signIn } from '@auth/sveltekit/client';
 
 	let menuOpen = false;
 
 	export let user: User | undefined;
 	// export let selectedTeam: Team | undefined;
+
+	function signInUsingJS() {
+		signIn('email', {
+			email: 'test@jeroenpelgrims.com',
+			callbackUrl: '/',
+		});
+	}
 </script>
 
 <nav class="navbar" aria-label="main navigation">
@@ -43,6 +51,9 @@
 			{:else}
 				<div class="navbar-item">
 					<a href="/auth/signin" class="button is-primary">Log in</a>
+				</div>
+				<div class="navbar-item">
+					<button class="button" on:click={signInUsingJS}>Log in JS</button>
 				</div>
 			{/if}
 		</div>
