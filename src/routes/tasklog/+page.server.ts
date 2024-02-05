@@ -1,5 +1,5 @@
 import { getUserIdFromLocals } from '$lib/auth/session';
-import { db } from '$lib/db/index.js';
+import { connect } from '$lib/db/index.js';
 import { taskLog } from '$lib/db/schema.js';
 import { canUserManageTask } from '$lib/db/task.js';
 import { fail } from '@sveltejs/kit';
@@ -24,6 +24,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db
 			.insert(taskLog)
 			.values({ id: uuid(), taskId, timestamp: timestamp.toDate() })

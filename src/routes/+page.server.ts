@@ -1,5 +1,5 @@
 import '$lib/db';
-import { db } from '$lib/db';
+import { connect } from '$lib/db';
 import { task, taskGroup, taskLog, team } from '$lib/db/schema';
 import { getTaskGroupsByTeamId } from '$lib/db/taskGroup';
 import { eq, max } from 'drizzle-orm';
@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 	const { selectedTeam } = await parent();
 	const taskGroups = await getTaskGroupsByTeamId(selectedTeam?.id);
 
+	const db = connect();
 	const lastCompleted = await db
 		.select({
 			taskId: task.id,

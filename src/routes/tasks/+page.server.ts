@@ -1,5 +1,5 @@
 import { getUserIdFromLocals } from '$lib/auth/session';
-import { db } from '$lib/db/index.js';
+import { connect } from '$lib/db/index.js';
 import type { IntervalUnit, Task } from '$lib/db/models.js';
 import { task } from '$lib/db/schema.js';
 import { canUserManageTask } from '$lib/db/task.js';
@@ -31,6 +31,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db.insert(task).values(newTask).execute();
 	},
 	updateTask: async ({ request, locals }) => {
@@ -43,6 +44,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db
 			.update(task)
 			.set(updatedTask)
@@ -59,6 +61,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db.delete(task).where(eq(task.id, taskId)).execute();
 	},
 };

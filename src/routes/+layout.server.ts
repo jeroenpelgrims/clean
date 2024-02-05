@@ -1,4 +1,4 @@
-import { db } from '$lib/db';
+import { connect } from '$lib/db';
 import { team } from '$lib/db/schema';
 import { getSelectedTeamId } from '$lib/db/userTeam';
 import { eq } from 'drizzle-orm';
@@ -25,6 +25,7 @@ export const load: LayoutServerLoad = async ({ request, cookies, locals }) => {
 };
 
 function getTeamById(teamId: string) {
+	const db = connect();
 	return db.query.team.findFirst({
 		where: eq(team.id, teamId),
 	});

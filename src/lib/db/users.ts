@@ -1,8 +1,9 @@
 import { v4 as uuid } from 'uuid';
-import { db } from '.';
+import { connect } from '.';
 import { task, taskGroup, team, teamUser } from './schema';
 
 export async function initializeNewUser(userId: string) {
+	const db = connect();
 	await db.transaction(async (tx) => {
 		const teamId = uuid();
 		await tx.insert(team).values({

@@ -1,9 +1,9 @@
 import { env } from '$env/dynamic/private';
+import { connect } from '$lib/db';
 import { initializeNewUser } from '$lib/db/users';
 import type { User } from '@auth/core';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import type { SvelteKitAuthConfig } from '@auth/sveltekit';
-import { db } from '../db';
 import { HttpEmailProvider } from './HttpEmailProvider';
 
 declare module '@auth/core' {
@@ -31,7 +31,7 @@ declare module '@auth/core' {
 
 export const authConfig: SvelteKitAuthConfig = {
 	secret: env.AUTH_SECRET,
-	adapter: DrizzleAdapter(db),
+	adapter: DrizzleAdapter(connect()),
 	session: {
 		strategy: 'jwt',
 		maxAge: 30 * 24 * 60 * 60, // 30 days

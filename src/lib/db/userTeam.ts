@@ -1,7 +1,7 @@
 import type { Session } from '@auth/core/types';
 import type { Cookies } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
-import { db } from '.';
+import { connect } from '.';
 import { team, teamUser } from './schema';
 
 const SELECTED_TEAM_ID_COOKIE = 'selectedTeamId';
@@ -50,6 +50,7 @@ export async function isUserInTeam(
 		return false;
 	}
 
+	const db = connect();
 	const result = db
 		.select()
 		.from(team)
@@ -60,6 +61,7 @@ export async function isUserInTeam(
 }
 
 async function getFirstTeamForUser(userId: string) {
+	const db = connect();
 	const firstTeam = await db
 		.select({ id: team.id })
 		.from(team)
@@ -77,6 +79,7 @@ export async function getUserTeams(userId: string | undefined) {
 		return [];
 	}
 
+	const db = connect();
 	const userTeams = await db
 		.select({ id: team.id, name: team.name })
 		.from(team)

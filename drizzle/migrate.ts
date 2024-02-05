@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { migrate } from 'drizzle-orm/libsql/migrator';
-import { client, db } from '../src/lib/db/index';
+import { client, connect } from '../src/lib/db/index';
 
+const db = connect();
 await migrate(db, { migrationsFolder: './drizzle/migrations' });
 client.close();

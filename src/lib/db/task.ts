@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import { db } from '.';
+import { connect } from '.';
 import { task, taskGroup, team, teamUser } from './schema';
 
 export async function canUserManageTask(
@@ -10,6 +10,7 @@ export async function canUserManageTask(
 		return false;
 	}
 
+	const db = connect();
 	const foundTask = await db
 		.select()
 		.from(team)

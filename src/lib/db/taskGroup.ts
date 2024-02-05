@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import { db } from '.';
+import { connect } from '.';
 import { taskGroup, team, teamUser } from './schema';
 
 export async function canUserManageGroup(
@@ -10,6 +10,7 @@ export async function canUserManageGroup(
 		return false;
 	}
 
+	const db = connect();
 	const foundGroup = await db
 		.select()
 		.from(team)
@@ -32,6 +33,7 @@ export async function getTaskGroupsByTeamId(teamId: string | undefined) {
 		return [];
 	}
 
+	const db = connect();
 	const taskGroups = await db.query.taskGroup.findMany({
 		where: eq(taskGroup.teamId, teamId),
 		with: {

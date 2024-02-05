@@ -1,5 +1,5 @@
 import { getUserIdFromLocals } from '$lib/auth/session';
-import { db } from '$lib/db/index.js';
+import { connect } from '$lib/db/index.js';
 import { taskGroup } from '$lib/db/schema.js';
 import { canUserManageGroup } from '$lib/db/taskGroup.js';
 import { getSelectedTeamId, isUserInTeam } from '$lib/db/userTeam.js';
@@ -19,6 +19,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db
 			.insert(taskGroup)
 			.values({ id: uuid(), name, teamId: selectedTeamId })
@@ -35,6 +36,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db
 			.update(taskGroup)
 			.set({ name })
@@ -51,6 +53,7 @@ export const actions = {
 			return fail(403);
 		}
 
+		const db = connect();
 		await db.delete(taskGroup).where(eq(taskGroup.id, groupId)).execute();
 	},
 };
