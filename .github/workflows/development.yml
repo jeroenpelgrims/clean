@@ -1,5 +1,3 @@
-name: Development actions
-
 on:
   push:
     branches:
@@ -8,11 +6,19 @@ on:
 
 jobs:
   build:
+    name: Build
     uses: ./.github/workflows/build.yml
-  deploy:
+  run_migrations:
+    name: Run Migrations
     needs: build
+    uses: ./.github/workflows/run_migrations.yml
+    secrets: inherit
+    with:
+      environment: develop
+  deploy:
+    name: Deploy to Cloudflare
+    needs: run_migrations
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
-      environment: development
       cf_environment: dev
