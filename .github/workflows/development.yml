@@ -4,8 +4,15 @@ on:
   push:
     branches:
       - development
+      - cisetup
 
 jobs:
   build:
-    environment: development
     uses: ./.github/workflows/build.yml
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      environment: development
+      cf_environment: dev
