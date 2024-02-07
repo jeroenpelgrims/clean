@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+  run_migrations:
+    name: Run Migrations
+    needs: build
+    uses: ./.github/workflows/run_migrations.yml
+    secrets: inherit
+    with:
+      environment: production
+  deploy:
+    name: Deploy to Cloudflare
+    needs: run_migrations
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      cf_environment: production
