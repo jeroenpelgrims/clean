@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Modal from '$lib/components/common/Modal.svelte';
+	import Titlebar from '$lib/components/common/Titlebar.svelte';
 	import TaskLineView from '$lib/components/tasks/TaskGroupWithTasks/TaskLineView/index.svelte';
 	import TaskGroupWithTasks from '$lib/components/tasks/TaskGroupWithTasks/index.svelte';
 	import GroupForm from '../lib/components/groups/GroupForm/index.svelte';
@@ -9,21 +10,23 @@
 	let addGroupModalOpen = false;
 </script>
 
-<div class="is-flex is-justify-content-flex-end gap-1">
-	<a href="/groups/manage" class="button">
-		<span class="icon is-small">
-			<i class="fas fa-folder-open" />
-		</span>
-		<span>Manage groups</span>
-	</a>
+<Titlebar title="Task dashboard">
+	<div>
+		<a href="/groups/manage" class="button">
+			<span class="icon is-small">
+				<i class="fas fa-folder-open" />
+			</span>
+			<span>Manage groups</span>
+		</a>
 
-	<a href="/tasks/manage" class="button">
-		<span class="icon is-small">
-			<i class="fas fa-list-check" />
-		</span>
-		<span>Manage tasks</span>
-	</a>
-</div>
+		<a href="/tasks/manage" class="button">
+			<span class="icon is-small">
+				<i class="fas fa-list-check" />
+			</span>
+			<span>Manage tasks</span>
+		</a>
+	</div>
+</Titlebar>
 
 {#each data.taskGroups as group}
 	<TaskGroupWithTasks {group}>

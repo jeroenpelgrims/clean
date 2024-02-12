@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Modal from '$lib/components/common/Modal.svelte';
+	import Titlebar from '$lib/components/common/Titlebar.svelte';
 	import GroupForm from '$lib/components/groups/GroupForm/index.svelte';
 	import TaskGroupEditable from '$lib/components/groups/TaskGroupEditable.svelte';
 	import type { PageData } from './$types';
@@ -9,14 +10,14 @@
 	let addGroupModalOpen = false;
 </script>
 
-<div class="is-flex is-justify-content-flex-end gap-1">
+<Titlebar title="Manage groups">
 	<a href="/" class="button is-danger">
 		<span class="icon is-small">
 			<i class="fas fa-chevron-left" />
 		</span>
 		<span>Back</span>
 	</a>
-</div>
+</Titlebar>
 
 {#each data.taskGroups as group}
 	<TaskGroupEditable {group} />

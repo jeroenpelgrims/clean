@@ -1,6 +1,6 @@
 <script lang="ts">
+	import GroupItem from '$lib/components/common/GroupItem.svelte';
 	import Modal from '$lib/components/common/Modal.svelte';
-	import TaskGroupBase from '$lib/components/groups/TaskGroupBase/index.svelte';
 	import TaskForm from '$lib/components/tasks/TaskForm/index.svelte';
 	import type { TaskGroup } from '$lib/db/models';
 
@@ -10,7 +10,11 @@
 	let addTaskModalOpen = false;
 </script>
 
-<TaskGroupBase {group}>
+<GroupItem>
+	<svelte:fragment slot="title">
+		{group.name}
+	</svelte:fragment>
+
 	<slot />
 
 	{#if canAddTask}
@@ -26,7 +30,7 @@
 			</button>
 		</div>
 	{/if}
-</TaskGroupBase>
+</GroupItem>
 
 <Modal isOpen={addTaskModalOpen} onClose={() => (addTaskModalOpen = false)}>
 	<TaskForm groupId={group.id} afterSave={() => (addTaskModalOpen = false)} />
