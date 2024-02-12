@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { TaskGroup } from '$lib/db/models';
+	import GroupItem from '../common/GroupItem.svelte';
 	import Modal from '../common/Modal.svelte';
 	import GroupForm from './GroupForm/index.svelte';
-	import TaskGroupBase from './TaskGroupBase/index.svelte';
 
 	export let group: TaskGroup;
 
 	let editGroupModalOpen = false;
 </script>
 
-<TaskGroupBase {group}>
-	<slot slot="buttons">
+<GroupItem>
+	<svelte:fragment slot="title">{group.name}</svelte:fragment>
+
+	<svelte:fragment slot="actions">
 		<button
 			class="button is-warning is-light is-medium"
 			on:click={() => (editGroupModalOpen = true)}
@@ -40,8 +42,8 @@
 				</span>
 			</button>
 		</form>
-	</slot>
-</TaskGroupBase>
+	</svelte:fragment>
+</GroupItem>
 
 <Modal isOpen={editGroupModalOpen} onClose={() => (editGroupModalOpen = false)}>
 	<GroupForm {group} afterSave={() => (editGroupModalOpen = false)} />

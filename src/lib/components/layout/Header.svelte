@@ -1,11 +1,12 @@
 <script lang="ts">
+	import type { Team } from '$lib/db/models';
 	import type { User } from '@auth/core/types';
 	import { signIn } from '@auth/sveltekit/client';
 
 	let menuOpen = false;
 
 	export let user: User | undefined;
-	// export let selectedTeam: Team | undefined;
+	export let selectedTeam: Team | undefined;
 
 	function signInUsingJS() {
 		signIn('email', {
@@ -41,10 +42,15 @@
 	<div class="navbar-menu" class:is-active={menuOpen}>
 		<div class="navbar-end">
 			{#if user}
-				<!-- <div class="navbar-item team">
+				<div class="navbar-item is-flex gap-2 is-align-items-center">
 					<strong>{selectedTeam?.name}</strong>
-					<button class="button">Change team</button>
-				</div> -->
+
+					<a href="/teams" class="button">
+						<span class="icon is-small">
+							<i class="fas fa-refresh" />
+						</span>
+					</a>
+				</div>
 				<div class="navbar-item">
 					<a href="/auth/signout" class="button">Log out</a>
 				</div>
