@@ -42,7 +42,7 @@ export const actions = {
 			});
 		});
 	},
-	delete: async ({ request, locals }) => {
+	leave: async ({ request, locals }) => {
 		const data = await request.formData();
 		const session = await locals.auth();
 		const teamId = data.get('id')!.toString();
@@ -60,13 +60,16 @@ export const actions = {
 
 		await db.transaction(async (tx) => {
 			if (isDelete) {
+				console.log('deleting team');
 				await tx.delete(teamUser).where(eq(teamUser.teamId, teamId));
 				await tx.delete(team).where(eq(team.id, teamId));
 			} else {
+				console.log('leaving team');
 				await tx
 					.delete(teamUser)
 					.where(and(eq(teamUser.teamId, teamId), eq(teamUser.userId, userId)));
 			}
 		});
 	},
+	select: async ({ request, locals }) => {},
 };
