@@ -5,6 +5,7 @@
 	import TeamForm from '$lib/components/teams/TeamForm/index.svelte';
 	import type { Team } from '$lib/db/models';
 	import LeaveTeamButton from './LeaveTeamButton.svelte';
+	import SelectTeamButton from './SelectTeamButton.svelte';
 
 	export let selectedTeam: Team | undefined;
 	export let userTeams: Team[];
@@ -21,12 +22,7 @@
 		</svelte:fragment>
 		<svelte:fragment slot="actions">
 			{#if team.id !== selectedTeam?.id}
-				<button class="button">
-					<span class="icon">
-						<i class="fas fa-repeat" />
-					</span>
-					<span>Select</span>
-				</button>
+				<SelectTeamButton teamId={team.id} />
 
 				<LeaveTeamButton teamId={team.id} />
 			{:else}

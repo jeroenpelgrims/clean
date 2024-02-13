@@ -1,6 +1,7 @@
 import '$lib/db';
 import { connect } from '$lib/db';
 import { team, teamUser } from '$lib/db/schema';
+import { setSelectedTeamId } from '$lib/db/userTeam';
 import { and, count, eq, getTableColumns } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
 import type { PageServerLoad } from './$types';
@@ -60,16 +61,21 @@ export const actions = {
 
 		await db.transaction(async (tx) => {
 			if (isDelete) {
-				console.log('deleting team');
 				await tx.delete(teamUser).where(eq(teamUser.teamId, teamId));
 				await tx.delete(team).where(eq(team.id, teamId));
 			} else {
-				console.log('leaving team');
 				await tx
 					.delete(teamUser)
 					.where(and(eq(teamUser.teamId, teamId), eq(teamUser.userId, userId)));
 			}
 		});
 	},
-	select: async ({ request, locals }) => {},
+	select: async ({ request, locals, cookies }) => {
+		const data = await request.formData();
+		const teamId = data.get('id')!.toString();
+		const session = await locals.auth();
+		if (session) {
+			await setSelectedTeamId(session, cookies, teamId);
+		}
+	},
 };
