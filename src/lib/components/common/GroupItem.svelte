@@ -1,5 +1,5 @@
 <div class="section is-small">
-	<div class="columns">
+	<div class="columns is-vcentered">
 		<div class="column">
 			<span class="title is-5">
 				<slot name="title" />

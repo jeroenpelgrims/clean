@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import type { task, taskGroup, team, user } from './schema';
+import type { task, taskGroup, team, teamUser, user } from './schema';
 
 export enum IntervalUnit {
 	Day = 'day',
@@ -12,3 +12,4 @@ export type User = InferSelectModel<typeof user>;
 export type Task = InferSelectModel<typeof task>;
 export type TaskGroup = InferSelectModel<typeof taskGroup>;
 export type Team = InferSelectModel<typeof team>;
+export type TeamUser = InferSelectModel<typeof teamUser>;
