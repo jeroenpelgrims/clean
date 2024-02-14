@@ -1,7 +1,8 @@
 import '$lib/db';
 import { connect } from '$lib/db';
 import { team, teamUser, user } from '$lib/db/schema';
-import { setSelectedTeamId } from '$lib/db/userTeam';
+import { isUserInTeam, setSelectedTeamId } from '$lib/db/userTeam';
+import { error } from '@sveltejs/kit';
 import { and, count, eq, getTableColumns, inArray, not } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
 import type { PageServerLoad } from './$types';
@@ -40,7 +41,7 @@ export const actions = {
 	create: async ({ request, locals }) => {
 		const session = await locals.auth();
 		const data = await request.formData();
-		const name = data.get('name')?.toString() ?? '';
+		const name = data.get('teamName')?.toString() ?? '';
 		const username = data.get('username')?.toString();
 		const db = connect();
 		await db.transaction(async (tx) => {
@@ -65,6 +66,11 @@ export const actions = {
 		const session = await locals.auth();
 		const teamId = data.get('id')!.toString();
 		const userId = session?.user?.id!;
+
+		const userInTeam = await isUserInTeam(userId, teamId);
+		if (!userInTeam) {
+			return error(403);
+		}
 
 		const db = connect();
 		const teamUserCount = await db
@@ -91,5 +97,35 @@ export const actions = {
 		if (session) {
 			await setSelectedTeamId(session, cookies, teamId);
 		}
+	},
+	edit: async ({ request }) => {
+		const data = await request.formData();
+		const teamId = data.get('teamId')!.toString();
+		const teamUserId = data.get('teamUserId')?.toString();
+		const teamName = data.get('teamName')?.toString();
+		const username = data.get('username')?.toString();
+
+		const userInTeam = await isUserInTeam(teamUserId, teamId);
+		if (!userInTeam) {
+			return error(403);
+		}
+
+		const db = connect();
+		await db.transaction(async (tx) => {
+			const updateTeamName = tx
+				.update(team)
+				.set({ name: teamName })
+				.where(eq(team.id, teamId));
+			const updateMemberName = tx
+				.update(teamUser)
+				.set({ username })
+				.where(
+					and(
+						eq(teamUser.teamId, teamId),
+						eq(teamUser.userId, teamUserId ?? ''),
+					),
+				);
+			await Promise.all([updateTeamName, updateMemberName]);
+		});
 	},
 };

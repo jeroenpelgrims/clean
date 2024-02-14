@@ -3,13 +3,16 @@
 	import type { Team } from '$lib/db/models';
 
 	export let team: Team | undefined = undefined;
+	export let userId: string | undefined = undefined;
+	export let username: string | null = null;
 	export let afterSave: () => void = () => {};
+	let editing = team && userId;
 </script>
 
 <div class="card">
 	<div class="card-header">
 		<p class="card-header-title is-flex is-justify-content-space-between">
-			{#if team}Edit team{:else}Create new team{/if}
+			{#if editing}Edit team{:else}Create new team{/if}
 		</p>
 	</div>
 	<div class="card-content">
@@ -23,8 +26,9 @@
 				};
 			}}
 		>
-			{#if team}
-				<input name="id" type="hidden" value={team.id} />
+			{#if editing}
+				<input name="teamId" type="hidden" value={team?.id} />
+				<input name="teamUserId" type="hidden" value={userId} />
 			{/if}
 
 			<label class="field">
@@ -32,7 +36,7 @@
 				<div class="control">
 					<!-- svelte-ignore a11y-autofocus-->
 					<input
-						name="name"
+						name="teamName"
 						class="input"
 						type="text"
 						placeholder="Team name"
@@ -54,7 +58,7 @@
 						type="text"
 						placeholder="Your name"
 						required
-						value={''}
+						value={username ?? ''}
 					/>
 				</div>
 				<p class="help has-text-grey-light">
@@ -68,7 +72,7 @@
 					Cancel
 				</button>
 				<button class="button is-primary" type="submit">
-					{#if team}Update{:else}Add{/if}
+					{#if editing}Update{:else}Add{/if}
 				</button>
 			</div>
 		</form>
