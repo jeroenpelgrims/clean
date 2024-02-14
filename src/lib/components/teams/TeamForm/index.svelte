@@ -49,12 +49,12 @@
 				<div class="control">
 					<!-- svelte-ignore a11y-autofocus-->
 					<input
-						name="name"
+						name="username"
 						class="input"
 						type="text"
 						placeholder="Your name"
 						required
-						value={'TODO' ?? ''}
+						value={''}
 					/>
 				</div>
 				<p class="help has-text-grey-light">
