@@ -1,24 +1,39 @@
 import '$lib/db';
 import { connect } from '$lib/db';
-import { team, teamUser } from '$lib/db/schema';
+import { team, teamUser, user } from '$lib/db/schema';
 import { setSelectedTeamId } from '$lib/db/userTeam';
-import { and, count, eq, getTableColumns } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, inArray, not } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ parent }) => {
-	const { user } = await parent();
+	const { user: activeUser } = await parent();
 	const db = connect();
 	const userTeams = await db
-		.select({ ...getTableColumns(team) })
+		.select({ ...getTableColumns(team), username: teamUser.username })
 		.from(team)
 		.innerJoin(
 			teamUser,
-			and(eq(teamUser.teamId, team.id), eq(teamUser.userId, user?.id ?? '')),
-		)
-		.execute();
+			and(
+				eq(teamUser.teamId, team.id),
+				eq(teamUser.userId, activeUser?.id ?? ''),
+			),
+		);
+	const otherMembers = await db
+		.select({ ...getTableColumns(teamUser), email: user.email })
+		.from(teamUser)
+		.innerJoin(user, eq(teamUser.userId, user.id))
+		.where(
+			and(
+				inArray(
+					teamUser.teamId,
+					userTeams.map((t) => t.id),
+				),
+				not(eq(teamUser.userId, activeUser?.id ?? '')),
+			),
+		);
 
-	return { userTeams };
+	return { userTeams, otherMembers };
 };
 
 export const actions = {
@@ -26,6 +41,7 @@ export const actions = {
 		const session = await locals.auth();
 		const data = await request.formData();
 		const name = data.get('name')?.toString() ?? '';
+		const username = data.get('username')?.toString();
 		const db = connect();
 		await db.transaction(async (tx) => {
 			const teamResults = await tx
@@ -40,6 +56,7 @@ export const actions = {
 			await tx.insert(teamUser).values({
 				teamId: newTeam.id,
 				userId,
+				username,
 			});
 		});
 	},
@@ -55,20 +72,17 @@ export const actions = {
 			.from(teamUser)
 			.where(eq(teamUser.teamId, teamId))
 			.get();
+
 		// If there's only 1 user in the team, we'll delete the team
 		// Otherwise we just remove the user from the team
-		const isDelete = teamUserCount?.count === 1;
-
-		await db.transaction(async (tx) => {
-			if (isDelete) {
-				await tx.delete(teamUser).where(eq(teamUser.teamId, teamId));
-				await tx.delete(team).where(eq(team.id, teamId));
-			} else {
-				await tx
-					.delete(teamUser)
-					.where(and(eq(teamUser.teamId, teamId), eq(teamUser.userId, userId)));
-			}
-		});
+		const isDelete = (teamUserCount?.count ?? 0) <= 1;
+		if (isDelete) {
+			await db.delete(team).where(eq(team.id, teamId));
+		} else {
+			await db
+				.delete(teamUser)
+				.where(and(eq(teamUser.teamId, teamId), eq(teamUser.userId, userId)));
+		}
 	},
 	select: async ({ request, locals, cookies }) => {
 		const data = await request.formData();

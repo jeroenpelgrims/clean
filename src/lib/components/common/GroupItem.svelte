@@ -1,9 +1,9 @@
 <div class="section is-small">
 	<div class="columns is-vcentered">
 		<div class="column">
-			<span class="title is-5">
+			<p class="title is-4">
 				<slot name="title" />
-			</span>
+			</p>
 		</div>
 		<div class="column has-text-right">
 			<slot name="actions" />

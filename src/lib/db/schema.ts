@@ -66,6 +66,7 @@ export const teamUser = sqliteTable(
 		userId: text('userId')
 			.notNull()
 			.references(() => user.id, { onDelete: 'cascade' }),
+		username: text('username'),
 	},
 	(teamUser) => ({
 		pk: primaryKey({ columns: [teamUser.teamId, teamUser.userId] }),
