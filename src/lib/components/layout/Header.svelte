@@ -43,12 +43,11 @@
 		<div class="navbar-end">
 			{#if user}
 				<div class="navbar-item is-flex gap-2 is-align-items-center">
-					<strong>{selectedTeam?.name}</strong>
-
 					<a href="/teams" class="button">
 						<span class="icon is-small">
-							<i class="fas fa-refresh" />
+							<i class="fas fa-repeat" />
 						</span>
+						<span>{selectedTeam?.name}</span>
 					</a>
 				</div>
 				<div class="navbar-item">

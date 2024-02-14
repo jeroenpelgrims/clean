@@ -3,11 +3,11 @@
 	import type { User } from '$lib/db/models.js';
 
 	export let data;
-	const user = data.user! as User;
+	const activeUser = data.user! as User;
 </script>
 
 <TeamsPage
-	{user}
+	{activeUser}
 	selectedTeam={data.selectedTeam}
 	userTeams={data.userTeams}
 	otherMembers={data.otherMembers}
