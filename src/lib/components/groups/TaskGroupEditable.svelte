@@ -23,6 +23,7 @@
 			</span>
 		</button>
 		<form
+			class="is-inline-block"
 			method="POST"
 			action="/groups?/deleteGroup"
 			use:enhance={({ cancel }) => {

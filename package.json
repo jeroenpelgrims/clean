@@ -44,11 +44,13 @@
 		"@auth/sveltekit": "^0.11.1",
 		"@libsql/client": "0.4.0-pre.7",
 		"@types/bcrypt": "^5.0.2",
+		"@types/mjml": "^4.7.4",
 		"@types/uuid": "^9.0.8",
 		"bcrypt": "^5.1.1",
 		"dayjs": "^1.11.10",
 		"drizzle-orm": "^0.29.3",
 		"flatpickr": "^4.6.13",
+		"mjml": "^4.15.3",
 		"uuid": "^9.0.1"
 	}
 }
